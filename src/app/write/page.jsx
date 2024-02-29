@@ -13,7 +13,10 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
-import ReactQuill from "react-quill";
+const ReactQuillDynamic = dynamic(() => import('react-quill'), {
+  ssr: false, // This ensures that the component is not imported on the server side
+});
+
 
 const WritePage = () => {
   const { status } = useSession();
@@ -136,13 +139,15 @@ const WritePage = () => {
             </button>
           </div>
         )}
-        <ReactQuill
-          className={styles.textArea}
-          theme="bubble"
-          value={value}
-          onChange={setValue}
-          placeholder="Tell your story..."
-        />
+        {typeof window !== 'undefined' && (
+          <ReactQuillDynamic
+            className={styles.textArea}
+            theme="bubble"
+            value={value}
+            onChange={setValue}
+            placeholder="Tell your story..."
+          />
+        )}
       </div>
       <button className={styles.publish} onClick={handleSubmit}>
         Publish
