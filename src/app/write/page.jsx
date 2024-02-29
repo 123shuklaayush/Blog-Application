@@ -13,13 +13,11 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "@/utils/firebase";
-const ReactQuillDynamic = dynamic(() => import('react-quill'), {
-  ssr: false, // This ensures that the component is not imported on the server side
-});
-
+import dynamic from "next/dynamic";
 
 const WritePage = () => {
   const { status } = useSession();
+  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
@@ -106,7 +104,10 @@ const WritePage = () => {
         className={styles.input}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <select className={styles.select} onChange={(e) => setCatSlug(e.target.value)}>
+      <select
+        className={styles.select}
+        onChange={(e) => setCatSlug(e.target.value)}
+      >
         <option value="style">style</option>
         <option value="fashion">fashion</option>
         <option value="food">food</option>
@@ -139,15 +140,13 @@ const WritePage = () => {
             </button>
           </div>
         )}
-        {typeof window !== 'undefined' && (
-          <ReactQuillDynamic
-            className={styles.textArea}
-            theme="bubble"
-            value={value}
-            onChange={setValue}
-            placeholder="Tell your story..."
-          />
-        )}
+        <ReactQuill
+          className={styles.textArea}
+          theme="bubble"
+          value={value}
+          onChange={setValue}
+          placeholder="Tell your story..."
+        />
       </div>
       <button className={styles.publish} onClick={handleSubmit}>
         Publish
